@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2012/05/25
+# 2012/06/01
 
 import os, sys
 from urllib.request import urlopen
 
 def extract_images(album):
+    """Given a standard alphanumeric album name (of the form ABCDE), returns a
+    list of the images contained in the album (each of the form FGHIJ.xyz)."""
+
     try:
         # Read and decode the page
         page = urlopen("http://imgur.com/a/" + album).read().decode()
@@ -23,16 +26,20 @@ def extract_images(album):
         print("error: could not read album: " + album)
         return []
 
-def save_images(album, images):
-    # Create the directory if it does not exist
-    if (not os.path.exists(album)):
-        os.makedirs(album)
+def save_images(directory, images):
+    """Given a list of images (each of the form FGHIJ.xyz), saves each image
+    under the specified directory."""
 
+    # Create the directory if it does not exist
+    if (not os.path.exists(directory)):
+        os.makedirs(directory)
+
+    # Count number of saved images to verify later
     saved = 0
 
     # Save each image
     for image in images:
-        path = album + "/" + image
+        path = directory + "/" + image
 
         if (os.path.exists(path)):
             print("file exists: " + path)
@@ -53,9 +60,13 @@ def save_images(album, images):
             except:
                 print("error: could not save file")
 
+    # Print final output statistics
     print("saved " + str(saved) + " of " + str(len(images)) + " images")
 
 def main():
+    """Takes one command-line argument, the album name, and saves all images
+    contained in that album to a local directory."""
+
     # Use the first argument as the album name
     if (len(sys.argv) < 2):
         print("error: please pass an album name")
