@@ -7,14 +7,14 @@ import os, sys
 from urllib.request import urlopen
 
 def extract_images(album):
-    """Given a standard alphanumeric album name (of the form ABCDE), returns a
-    list of the images contained in the album (each of the form FGHIJ.xyz)."""
+    """Given a standard alphanumeric album name of the form ABCDE, returns a
+    list of the images contained in the album, each of the form FGHIJ.XYZ."""
 
     try:
         # Read and decode the page
         page = urlopen("http://imgur.com/a/" + album).read().decode()
 
-        # Define null to avoid parse error
+        # Data is not exactly JSON, so define null to avoid parse errors
         null = None
 
         # Extract the list of images and eval it to a Python list
@@ -27,14 +27,14 @@ def extract_images(album):
         return []
 
 def save_images(directory, images):
-    """Given a list of images (each of the form FGHIJ.xyz), saves each image
+    """Given a list of images, each of the form FGHIJ.XYZ, saves each image
     under the specified directory."""
 
     # Create the directory if it does not exist
     if (not os.path.exists(directory)):
         os.makedirs(directory)
 
-    # Count number of saved images to verify later
+    # Count number of saved images for later verification
     saved = 0
 
     # Save each image
@@ -47,12 +47,14 @@ def save_images(directory, images):
             print("downloading: " + path)
 
             try:
+                # Read but do not decode image data
                 image_data = urlopen("http://i.imgur.com/" + image).read()
             except:
                 print("error: could not download file")
                 continue
 
             try:
+                # Write image data in binary
                 with open(path, "wb") as out_file:
                     out_file.write(image_data)
 
@@ -76,7 +78,7 @@ def main():
         # Extract image urls
         image_urls = extract_images(album)
 
-        # Save the images
+        # Save the images, if any, using the album name for the subdirectory
         if (len(image_urls) > 0):
             save_images(album, image_urls)
 
