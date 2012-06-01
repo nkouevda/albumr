@@ -20,3 +20,7 @@ or (with execute permission):
     ...
     downloading: adkET/sy282.jpg
     saved 27 of 27 images
+
+### License
+
+Licensed under the [MIT License](http://www.opensource.org/licenses/MIT).
