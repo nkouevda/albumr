@@ -5,7 +5,7 @@
 
 A basic Python utility to download Imgur albums.
 
-### To run:
+## Usage
 
     python3 download.py [album]
 
@@ -13,7 +13,7 @@ or (with execute permission):
 
     ./download.py [album]
 
-### Example:
+## Example
 
     $ ./download.py adkET
     downloading: adkET/BDvh1.png
@@ -21,6 +21,6 @@ or (with execute permission):
     downloading: adkET/sy282.jpg
     saved 27 of 27 images
 
-### License
+## License
 
 Licensed under the [MIT License](http://www.opensource.org/licenses/MIT).
