@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/06/01 -->
+<!-- 2012/06/03 -->
 
 # Imgur Album Downloader
 
@@ -7,15 +7,15 @@ A basic Python utility to download Imgur albums.
 
 ## Usage
 
-    python3 download.py [album]
+    python3 imgur.py [album]
 
 or (with execute permission):
 
-    ./download.py [album]
+    ./imgur.py [album]
 
 ## Example
 
-    $ ./download.py adkET
+    $ ./imgur.py adkET
     downloading: adkET/BDvh1.png
     ...
     downloading: adkET/sy282.jpg

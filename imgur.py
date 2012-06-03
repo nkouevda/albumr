@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2012/06/01
+# 2012/06/03
 
 import os, sys
 from urllib.request import urlopen
