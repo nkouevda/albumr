@@ -1,9 +1,9 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/06/03 -->
+<!-- 2012/06/05 -->
 
 # Imgur Album Downloader
 
-A basic Python utility to download Imgur albums.
+Command-line downloading of Imgur albums.
 
 ## Usage
 
@@ -16,9 +16,6 @@ or (with execute permission):
 ## Example
 
     $ ./imgur.py adkET
-    downloading: adkET/BDvh1.png
-    ...
-    downloading: adkET/sy282.jpg
     saved 27 of 27 images
 
 ## License
