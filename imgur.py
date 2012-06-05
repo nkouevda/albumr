@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2012/06/03
+# 2012/06/05
 
-import os, sys
+import os, re, sys
 from urllib.request import urlopen
 
 def extract_images(album):
@@ -18,10 +18,10 @@ def extract_images(album):
         null = None
 
         # Extract the list of images and eval it to a Python list
-        image_list = eval(page[page.find('"items":') + 8:page.find("}]}") + 2])
+        images = eval(re.search(r'(?<="items":)\[\{.+\}\](?=\})', page).group())
 
         # Generate a list of images in the album
-        return [image["hash"] + image["ext"] for image in image_list]
+        return [image["hash"] + image["ext"] for image in images]
     except:
         print("error: could not read album: " + album)
         return []
