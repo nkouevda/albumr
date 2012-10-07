@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2012/06/05
+# 2012/10/07
 
-import argparse, os, re, sys
+import argparse, json, os, re, sys
 from urllib.request import urlopen
 
 def extract_images(album):
@@ -14,11 +14,9 @@ def extract_images(album):
         # Read and decode the page
         page = urlopen("http://imgur.com/a/" + album).read().decode()
 
-        # Data is not exactly JSON, so define null to avoid parse errors
-        null = None
-
         # Extract the list of images and eval it to a Python list
-        images = eval(re.search(r'(?<="items":)\[\{.+\}\](?=\})', page).group())
+        images = json.loads(re.search(r'(?<="items":)\[\{.+\}\](?=\})',
+                page).group())
 
         # Generate a list of images in the album
         return [image["hash"] + image["ext"] for image in images]
@@ -31,8 +29,8 @@ def save_images(album, images, verbose=False):
     a local directory of the same name as the album."""
 
     # Create the directory if it does not exist
-    if (not os.path.exists(album)):
-        if (verbose):
+    if not os.path.exists(album):
+        if verbose:
             print("making directory: " + album)
 
         os.makedirs(album)
@@ -44,10 +42,10 @@ def save_images(album, images, verbose=False):
     for image in images:
         path, url = album + "/" + image, "http://i.imgur.com/" + image
 
-        if (os.path.exists(path)):
+        if os.path.exists(path):
             print("error: file exists: " + path)
         else:
-            if (verbose):
+            if verbose:
                 print("downloading: " + url)
 
             try:
@@ -57,8 +55,9 @@ def save_images(album, images, verbose=False):
                 print("error: could not download file: " + url)
                 continue
 
-            if (verbose):
-                print("saving: " + path)
+            if verbose:
+                print("saving: " + path + " (" + str(saved_count + 1) + " of " +
+                        str(len(images)) + ")")
 
             try:
                 # Write image data in binary
@@ -94,8 +93,8 @@ output.")
         image_urls = extract_images(album)
 
         # Save the images, if any, using the album name as the subdirectory
-        if (len(image_urls) > 0):
+        if len(image_urls) > 0:
             save_images(album, image_urls, verbose=args.verbose)
 
-if (__name__ == '__main__'):
+if __name__ == '__main__':
     main()
