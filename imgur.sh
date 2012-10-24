@@ -3,6 +3,7 @@
 # Nikita Kouevda
 # 2012/10/23
 
+# Iterate over the given album hashes
 for ALBUM in $@; do
     # Skip this iteration if the album could not be read
     if [ -z "`curl -sI http://imgur.com/a/$ALBUM | head -n 1 | grep 200`" ]; then
@@ -20,7 +21,7 @@ for ALBUM in $@; do
     for IMAGE in "$IMAGES"; do
         curl -so "$ALBUM/$IMAGE" "http://i.imgur.com/$IMAGE" &
     done
-
-    # Wait for completion
-    wait
 done
+
+# Wait for completion
+wait
