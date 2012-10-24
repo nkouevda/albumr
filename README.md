@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/06/05 -->
+<!-- 2012/10/23 -->
 
 # Imgur Album Downloader
 
@@ -7,16 +7,15 @@ Command-line downloading of Imgur albums.
 
 ## Usage
 
-    python3 imgur.py [album]
+    bash imgur.sh [album]
 
 or (with execute permission):
 
-    ./imgur.py [album]
+    ./imgur.sh [album]
 
 ## Example
 
-    $ ./imgur.py adkET
-    saved 27 of 27 images
+    ./imgur.py adkET
 
 ## License
 
