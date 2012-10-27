@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nikita Kouevda
-# 2012/10/23
+# 2012/10/27
 
 # Iterate over the given album hashes
 for ALBUM in $@; do
@@ -18,7 +18,7 @@ for ALBUM in $@; do
     IMAGES=$(curl -s http://imgur.com/a/$ALBUM | tr '}' '\n' | perl -ne 'print "$1$2\n" if m/"hash":"(.{5})".+"ext":"(\..{3,4})"/')
 
     # Download and store the images concurrently
-    for IMAGE in "$IMAGES"; do
+    for IMAGE in $IMAGES; do
         curl -so "$ALBUM/$IMAGE" "http://i.imgur.com/$IMAGE" &
     done
 done
