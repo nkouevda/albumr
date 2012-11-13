@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/10/23 -->
+<!-- 2012/11/12 -->
 
 # Imgur Album Downloader
 
@@ -15,7 +15,7 @@ or (with execute permission):
 
 ## Example
 
-    ./imgur.py adkET
+    ./imgur.sh adkET
 
 ## License
 
