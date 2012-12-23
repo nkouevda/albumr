@@ -40,21 +40,22 @@ for ALBUM in "$@"; do
     # Print the album being processed
     [[ "$VERBOSE" ]] && echo "Processing album: $ALBUM"
 
-    # Determine the album URL and hash
+    # Determine the album hash
     if [[ -n "$(curl -sI "http://imgur.com/a/$ALBUM" | head -n 1 | grep 200)" ]]; then
-        ALBUM_URL="http://imgur.com/a/$ALBUM"
-        ALBUM_HASH="$ALBUM"
+        ALBUM_HASH=${ALBUM:0:5}
     elif [[ -n "$(curl -sI "$ALBUM" | head -n 1 | grep 200)" ]]; then
-        ALBUM_URL="$ALBUM"
         ALBUM_HASH=$(echo "$ALBUM" | perl -ne 'm/imgur.com\/a\/(\w{5})/; print $1')
     else
         echo "Error: could not read album: $ALBUM" >&2
         continue
     fi
 
-    # Print the album URL and hash
-    [[ "$VERBOSE" ]] && echo "Album URL: $ALBUM_URL"
+    # Determine the album URL based on the hash
+    ALBUM_URL="http://imgur.com/a/$ALBUM_HASH"
+
+    # Print the album hash and URL
     [[ "$VERBOSE" ]] && echo "Album hash: $ALBUM_HASH"
+    [[ "$VERBOSE" ]] && echo "Album URL: $ALBUM_URL"
 
     # Use the album hash to make the directory if necessary
     if [[ ! -e "$ALBUM_HASH" ]]; then
