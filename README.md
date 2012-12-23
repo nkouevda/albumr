@@ -17,7 +17,8 @@ or (with execute permission):
 
     ./imgur.sh adkET
 
-or 
+or
+
     ./imgur.sh http://imgur.com/a/adkET
 
 ## License
