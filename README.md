@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/11/12 -->
+<!-- 2012/12/22 -->
 
 # Imgur Album Downloader
 
@@ -16,6 +16,9 @@ or (with execute permission):
 ## Example
 
     ./imgur.sh adkET
+
+or 
+    ./imgur.sh http://imgur.com/a/adkET
 
 ## License
 
