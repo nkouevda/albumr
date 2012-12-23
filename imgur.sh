@@ -38,7 +38,7 @@ done
 # Iterate over the given albums
 for ALBUM in "$@"; do
     # Print the album being processed
-    [[ $VERBOSE ]] && echo "Processing album: $ALBUM"
+    [[ "$VERBOSE" ]] && echo "Processing album: $ALBUM"
 
     # Determine the album URL and hash
     if [[ -n "$(curl -sI "http://imgur.com/a/$ALBUM" | head -n 1 | grep 200)" ]]; then
@@ -53,8 +53,8 @@ for ALBUM in "$@"; do
     fi
 
     # Print the album URL and hash
-    [[ $VERBOSE ]] && echo "Album URL: $ALBUM_URL"
-    [[ $VERBOSE ]] && echo "Album hash: $ALBUM_HASH"
+    [[ "$VERBOSE" ]] && echo "Album URL: $ALBUM_URL"
+    [[ "$VERBOSE" ]] && echo "Album hash: $ALBUM_HASH"
 
     # Use the album hash to make the directory if necessary
     if [[ ! -e "$ALBUM_HASH" ]]; then
@@ -87,3 +87,6 @@ done
 
 # Wait for all background jobs to finish
 wait
+
+# Indicate completion
+[[ "$VERBOSE" ]] && echo "Done"
