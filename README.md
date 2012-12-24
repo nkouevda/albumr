@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/12/23 -->
+<!-- 2012/12/24 -->
 
 # Imgur Album Downloader
 
@@ -7,17 +7,21 @@ Command-line downloading of Imgur albums.
 
 ## Usage
 
-    bash imgur.sh [-v] [album ...]
+    bash imgur.sh [-h] [-v] [album ...]
 
 or (with execute permission):
 
-	./imgur.sh [-v] [album ...]
+	./imgur.sh [-h] [-v] [album ...]
 
 ## Options
 
+	-h
+
+Show the help message.
+
 	-v
 
-Verbose output.
+Enable verbose output.
 
 ## Examples
 
