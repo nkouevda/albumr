@@ -7,11 +7,11 @@ Command-line downloading of Imgur albums.
 
 ## Usage
 
-    bash imgur.sh [-h] [-v] [album ...]
+    bash imgur.sh [-h] [-v] album ...
 
 or (with execute permission):
 
-	./imgur.sh [-h] [-v] [album ...]
+	./imgur.sh [-h] [-v] album ...
 
 ## Options
 
