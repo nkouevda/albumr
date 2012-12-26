@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nikita Kouevda
-# 2012/12/24
+# 2012/12/26
 
 # Store script name and directory
 script_name="${0##*/}"
@@ -41,7 +41,7 @@ while getopts "hv" option "$@"; do
             help_message
             exit 0
             ;;
-        # Enable verbose output
+        # Verbose output
         v)
             verbose_option=0
             ;;
@@ -51,10 +51,10 @@ done
 # Set shell positional arguments to the remaining arguments
 set -- ${@:$OPTIND}
 
-# Print usage and exit if no positional arguments given
+# Print usage to stderr and exit if no positional arguments given
 if [[ -z "$*" ]]; then
-    usage
-    exit 0
+    usage >&2
+    exit 1
 fi
 
 # Iterate over the given albums concurrently
@@ -70,7 +70,7 @@ for album in "$@"; do
         album_hash=$(echo "$album" | perl -ne 'm/imgur.com\/a\/([A-Za-z0-9]{5})/; print $1')
     else
         echo "error: could not read album: $album" >&2
-        continue
+        exit 1
     fi
 
     # Determine the album URL based on the hash
@@ -86,7 +86,7 @@ for album in "$@"; do
         mkdir "$album_hash"
     elif [[ ! -d "$album_hash" ]]; then
         echo "error: not a directory: $album_hash" >&2
-        continue
+        exit 1
     fi
 
     # Extract the image hashes and extensions
@@ -98,14 +98,25 @@ for album in "$@"; do
         # Strip any trailing characters for the local filename
         filename=$(echo $image | perl -pe 's/([A-Za-z0-9]\.[A-Za-z]{3,4}).*/$1/g')
 
+        # Skip existing files
+        if [[ -e "$album_hash/$filename" ]]; then
+            verbose && echo "skipping existing file: $album_hash/$filename"
+            exit 0
+        fi
+
         # Download the image and save it, storing the return code of curl
-        verbose && echo "downloading: http://i.imgur.com/$image"
+        verbose && echo "downloading image: http://i.imgur.com/$image"
         curl -so "$album_hash/$filename" "http://i.imgur.com/$image"
         return_code=$?
 
-        # Print success if verbose output enabled; print error regardless
-        [[ $return_code -eq 0 && verbose ]] && echo "saved: $album_hash/$filename"
-        [[ $return_code -ne 0 ]] && echo "error: download or save failed: $image" >&2
+        # Print success only if verbose output enabled
+        verbose && [[ $return_code -eq 0 ]] && echo "saved image: $album_hash/$filename"
+
+        # Print error message and remove the file if failed
+        if [[ $return_code -ne 0 ]]; then
+            echo "error: download or save failed: $image" >&2
+            rm "$album_hash/$filename"
+        fi
         ) &
     done
 
