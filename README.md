@@ -1,17 +1,17 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/12/24 -->
+<!-- 2012/12/26 -->
 
-# Imgur Album Downloader
+# albumr
 
 Command-line downloading of Imgur albums.
 
 ## Usage
 
-    bash imgur.sh [-h] [-v] album ...
+    bash albumr.sh [-h] [-v] album ...
 
 or (with execute permission):
 
-	./imgur.sh [-h] [-v] album ...
+	./albumr.sh [-h] [-v] album ...
 
 ## Options
 
@@ -25,11 +25,11 @@ Enable verbose output.
 
 ## Examples
 
-    ./imgur.sh adkET
+    ./albumr.sh adkET
 
 or
 
-    ./imgur.sh http://imgur.com/a/adkET
+    ./albumr.sh http://imgur.com/a/adkET
 
 ## License
 
