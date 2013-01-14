@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2012/12/26 -->
+<!-- 2013/01/13 -->
 
 # albumr
 
@@ -7,29 +7,37 @@ Command-line downloading of Imgur albums.
 
 ## Usage
 
-    bash albumr.sh [-h] [-v] album ...
+```bash
+bash albumr.sh [-h] [-v] album ...
+```
 
 or (with execute permission):
 
-	./albumr.sh [-h] [-v] album ...
+```bash
+./albumr.sh [-h] [-v] album ...
+```
 
 ## Options
 
-	-h
+    -h
 
 Show the help message.
 
-	-v
+    -v
 
 Enable verbose output.
 
 ## Examples
 
-    ./albumr.sh adkET
+```bash
+./albumr.sh adkET
+```
 
 or
 
-    ./albumr.sh http://imgur.com/a/adkET
+```bash
+./albumr.sh http://imgur.com/a/adkET
+```
 
 ## License
 
