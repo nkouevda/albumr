@@ -8,12 +8,12 @@ script_name="${0##*/}"
 script_dir="${0%/*}"
 
 # Prints usage
-function usage () {
+function usage() {
     echo "usage: $script_name [-h] [-v] [--] album ..."
 }
 
 # Prints help message
-function help_message () {
+function help_message() {
     usage
     cat <<EOF
 options:
@@ -23,7 +23,7 @@ EOF
 }
 
 # Returns 0 iff verbose output is enabled
-function verbose () {
+function verbose() {
     [[ -n "$verbose_option" ]]
     return $?
 }
