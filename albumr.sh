@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nikita Kouevda
-# 2012/12/26
+# 2013/01/16
 
 # Store script name and directory
 script_name="${0##*/}"
@@ -104,16 +104,16 @@ for album in "$@"; do
             exit 0
         fi
 
-        # Download the image and save it, storing the return code of curl
+        # Download the image and save it, storing the exit status of curl
         verbose && echo "downloading image: http://i.imgur.com/$image"
         curl -so "$album_hash/$filename" "http://i.imgur.com/$image"
-        return_code=$?
+        exit_status=$?
 
         # Print success only if verbose output enabled
-        verbose && [[ $return_code -eq 0 ]] && echo "saved image: $album_hash/$filename"
+        verbose && [[ $exit_status -eq 0 ]] && echo "saved image: $album_hash/$filename"
 
         # Print error message and remove the file if failed
-        if [[ $return_code -ne 0 ]]; then
+        if [[ $exit_status -ne 0 ]]; then
             echo "error: download or save failed: $image" >&2
             rm "$album_hash/$filename"
         fi
