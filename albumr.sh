@@ -3,9 +3,9 @@
 # Nikita Kouevda
 # 2013/01/19
 
-# Store script name and directory
+# Store the script name and directory
 script_name="${0##*/}"
-script_dir="${0%/*}"
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Prints usage
 function usage() {
