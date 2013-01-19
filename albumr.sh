@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Nikita Kouevda
-# 2013/01/16
+# 2013/01/19
 
 # Store script name and directory
 script_name="${0##*/}"
@@ -90,7 +90,7 @@ for album in "$@"; do
     fi
 
     # Extract the image hashes and extensions
-    images=$(curl -s "$album_url" | tr '}' '\n' | perl -ne 'print "$1$2\n" if m/"hash":"([A-Za-z0-9]{5})".+?"ext":"(.+?)"/')
+    images=$(curl -s "$album_url" | tr '}' '\n' | perl -ne 'print "$1$2\n" if m/"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"/')
 
     # Download and store the images concurrently
     for image in $images; do
@@ -128,8 +128,7 @@ for album in "$@"; do
     ) &
 done
 
-# Wait for all albums to finish
+# Wait for all albums to finish, indicate completion, and exit
 wait
-
-# Indicate completion
 verbose && echo "done"
+exit 0
