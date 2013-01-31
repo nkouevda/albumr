@@ -1,8 +1,8 @@
 # Nikita Kouevda
-# 2012/10/23
+# 2013/01/31
 
-# OS X
+# OS X Finder
 .DS_Store
 
-# Temporary vim files
+# Temporary Vim files
 *.swp
