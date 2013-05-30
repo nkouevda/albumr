@@ -4,9 +4,9 @@
 # 2013/05/30
 
 import argparse
+import multiprocessing
 import os
 import re
-import multiprocessing
 from urllib.request import urlopen
 
 
