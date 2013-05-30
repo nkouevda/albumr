@@ -24,7 +24,7 @@ def extract_images(album):
     # Find all pairs of image hashes and extensions in the content
     pairs = re.findall(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"', content)
 
-    # Join each pair and return a list of the images
+    # Join each pair and return a tuple of the images
     return tuple(''.join(pair) for pair in pairs)
 
 
@@ -53,8 +53,8 @@ def main():
 
     # Require at least one album name
     parser.add_argument(
-        'albums', nargs='+', type=str, metavar='album',
-        help='the album hash, consisting of 5 alphanumeric characters')
+        'albums', nargs='+', type=str, help='an album hash or URL',
+        metavar='album')
 
     # Parse the given command-line arguments
     args = parser.parse_args()
