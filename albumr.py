@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/05/30
+# 2013/05/31
 
 import argparse
 import multiprocessing
@@ -24,8 +24,8 @@ def extract_images(album):
     # Find all pairs of image hashes and extensions in the content
     pairs = re.findall(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"', content)
 
-    # Join each pair and return a tuple of the images
-    return tuple(''.join(pair) for pair in pairs)
+    # Join each pair and return a list of the images
+    return [''.join(pair) for pair in pairs]
 
 
 def save_image(image_tuple):
@@ -62,16 +62,25 @@ def main():
     images = set()
 
     for album in args.albums:
-        # Strip everything except for the album hash
-        album = re.findall(r'[A-Za-z0-9]{5}', album)[-1]
+        # Attempt to extract the album hash
+        match = re.search(r'^(?:.*/)?([A-Za-z0-9]+?)(?:#.*)?$', album)
+
+        if match:
+            album = match.group(1)
+        else:
+            print('error: could not parse album: ' + album)
+            continue
+
+        # Determine the images to save
+        album_images = extract_images(album)
 
         # Create the directory for this album if it does not exist
-        if not os.path.exists(album):
+        if album_images and not os.path.exists(album):
             print('making directory: ' + album)
             os.makedirs(album)
 
         # Add each image to the set, along with its album and number
-        for number, image in enumerate(extract_images(album)):
+        for number, image in enumerate(album_images):
             images.add((album, number + 1, image))
 
     # Use a process pool to simultaneously save images
