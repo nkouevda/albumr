@@ -10,30 +10,13 @@ import re
 from urllib.request import urlopen
 
 
-def extract_images(album):
-    """Return a list of the images contained in the given album."""
-
-    try:
-        # Read and decode the content
-        with urlopen('http://imgur.com/a/' + album) as in_url:
-            content = in_url.read().decode()
-    except:
-        print('error: could not read album: ' + album)
-        return []
-
-    # Find all pairs of image hashes and extensions in the content
-    pairs = re.findall(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"', content)
-
-    # Join each pair and return a list of the images
-    return [''.join(pair) for pair in pairs]
-
-
 def save_image(image_tuple):
     # Unpack the album, number, and image
     album, number, image = image_tuple
 
-    local_path = '{0}/{1}-{2}'.format(album, number, image)
+    # Save each file 'http://i.imgur.com/[image]' to '[album]/[number]-[image]'
     url = 'http://i.imgur.com/' + image
+    local_path = '{0}/{1}-{2}'.format(album, number, image)
 
     if os.path.exists(local_path):
         print('error: file exists: ' + local_path)
@@ -62,26 +45,30 @@ def main():
     images = set()
 
     for album in args.albums:
-        # Attempt to extract the album hash
-        match = re.search(r'^(?:.*/)?([A-Za-z0-9]+?)(?:#.*)?$', album)
+        try:
+            # Extract the album hash
+            album = re.search(
+                r'^(?:.*/)?([A-Za-z0-9]{5}?)(?:#.*)?$', album).group(1)
 
-        if match:
-            album = match.group(1)
-        else:
-            print('error: could not parse album: ' + album)
+            # Read and decode the content
+            with urlopen('http://imgur.com/a/' + album) as in_url:
+                content = in_url.read().decode()
+        except:
+            print('error: could not read album: ' + album)
             continue
 
-        # Determine the images to save
-        album_images = extract_images(album)
+        # Find all pairs of image hashes and extensions in the content
+        pairs = re.finditer(
+            r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"', content)
 
         # Create the directory for this album if it does not exist
-        if album_images and not os.path.exists(album):
+        if not os.path.exists(album):
             print('making directory: ' + album)
             os.makedirs(album)
 
         # Add each image to the set, along with its album and number
-        for number, image in enumerate(album_images):
-            images.add((album, number + 1, image))
+        for number, pair in enumerate(pairs):
+            images.add((album, number + 1, pair.group(1) + pair.group(2)))
 
     # Use a process pool to simultaneously save images
     pool = multiprocessing.Pool()
