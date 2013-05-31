@@ -47,8 +47,8 @@ def main():
     for album in args.albums:
         try:
             # Extract the album hash
-            album = re.search(
-                r'^(?:.*/)?([A-Za-z0-9]{5}?)(?:#.*)?$', album).group(1)
+            album = re.match(
+                r'(?:.*/)?([A-Za-z0-9]{5}?)(?:#.*)?$', album).group(1)
 
             # Read and decode the content
             with urlopen('http://imgur.com/a/' + album) as in_url:
