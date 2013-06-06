@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/05/31
+# 2013/06/06
 
 import argparse
+import html.parser
 import multiprocessing
 import os
 import re
@@ -68,6 +69,7 @@ def main():
         if args.title:
             # Extract the title, sanitize it, and append it to the directory
             title = re.search(r'data-title="(.*?)"', content).group(1)
+            title = html.parser.HTMLParser().unescape(title)
             title = re.sub(r'(?:[^ -~]|[/:])+', ' ', title)
             directory += '-[' + title + ']'
 
