@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/06/06
+# 2013/06/10
 
 import argparse
 import html.parser
@@ -57,7 +57,7 @@ def main():
         try:
             # Determine the album hash
             directory = album = re.match(
-                r'(?:.*/)?([A-Za-z0-9]{5}?)(?:#.*)?$', album).group(1)
+                r'(?:.*/)?([A-Za-z0-9]{5})(?:[/#].*)?$', album).group(1)
 
             # Read and decode the album page's content
             with urlopen('http://imgur.com/a/' + album) as in_url:
