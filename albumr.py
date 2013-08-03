@@ -42,13 +42,13 @@ def save_albums(albums, include_title=False, verbose=False):
     images = set()
 
     for album in albums:
-        directory = album_hash = re_album_hash.match(album).group(1)
-
         try:
+            directory = album_hash = re_album_hash.match(album).group(1)
+
             with urlopen('http://imgur.com/a/' + album_hash) as in_url:
                 content = in_url.read().decode()
         except:
-            print('error: could not read album: ' + album_hash)
+            print('error: could not read album: ' + album)
             continue
 
         if include_title:
