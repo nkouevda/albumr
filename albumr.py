@@ -3,12 +3,12 @@
 # Nikita Kouevda
 # 2013/08/08
 
-import argparse
-import html.parser
-import multiprocessing
 import os
 import re
 import sys
+from argparse import ArgumentParser
+from html.parser import HTMLParser
+from multiprocessing import Pool
 from urllib.request import urlopen
 
 
@@ -34,7 +34,8 @@ def save_image(directory_number_image_verbose):
 
 
 def save_albums(albums, include_title=False, verbose=False):
-    html_parser = html.parser.HTMLParser()
+    html_parser = HTMLParser()
+
     re_album_hash = re.compile(r'(?:.*/)?([A-Za-z0-9]{5})(?:[/#].*)?$')
     re_image = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
     re_title = re.compile(r'data-title="(.*?)"')
@@ -71,22 +72,20 @@ def save_albums(albums, include_title=False, verbose=False):
             images.add((directory, number + 1, image, verbose))
 
     # Use a process pool to simultaneously save images
-    pool = multiprocessing.Pool()
+    pool = Pool()
     pool.imap_unordered(save_image, images)
     pool.close()
     pool.join()
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Download Imgur albums')
+    parser = ArgumentParser(description='Download Imgur albums')
 
     # Require at least one album
     parser.add_argument('albums', nargs='+', type=str, metavar='album',
                         help='an album hash or URL')
-
     parser.add_argument('-t', '--title', action='store_true',
                         help='append album title to directory name')
-
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='verbose output')
 
