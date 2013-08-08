@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/08/03
+# 2013/08/08
 
 import argparse
 import html.parser
 import multiprocessing
 import os
 import re
+import sys
 from urllib.request import urlopen
 
 
@@ -19,7 +20,7 @@ def save_image(directory_number_image_verbose):
     path = '{0}/{1}-{2}'.format(directory, number, image)
 
     if os.path.exists(path):
-        print('error: file exists: ' + path)
+        print('error: file exists: ' + path, file=sys.stderr)
     else:
         try:
             with urlopen(url) as in_url:
@@ -29,7 +30,7 @@ def save_image(directory_number_image_verbose):
 
                     out_file.write(in_url.read())
         except:
-            print('error: could not save file: ' + path)
+            print('error: could not save file: ' + path, file=sys.stderr)
 
 
 def save_albums(albums, include_title=False, verbose=False):
@@ -48,7 +49,7 @@ def save_albums(albums, include_title=False, verbose=False):
             with urlopen('http://imgur.com/a/' + album_hash) as in_url:
                 content = in_url.read().decode()
         except:
-            print('error: could not read album: ' + album)
+            print('error: could not read album: ' + album, file=sys.stderr)
             continue
 
         if include_title:
