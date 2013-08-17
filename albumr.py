@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/08/08
+# 2013/08/17
 
 import os
 import re
@@ -12,13 +12,7 @@ from multiprocessing import Pool
 from urllib.request import urlopen
 
 
-def save_image(directory_number_image_verbose):
-    directory, number, image, verbose = directory_number_image_verbose
-
-    # Save 'http://i.imgur.com/`image`' to '`directory`/`number`-`image`'
-    url = 'http://i.imgur.com/' + image
-    path = '{0}/{1}-{2}'.format(directory, number, image)
-
+def save_image(url, path, verbose=False):
     if os.path.exists(path):
         print('error: file exists: ' + path, file=sys.stderr)
     else:
@@ -33,7 +27,7 @@ def save_image(directory_number_image_verbose):
             print('error: could not save file: ' + path, file=sys.stderr)
 
 
-def save_albums(albums, include_title=False, verbose=False):
+def save_albums(albums, numbers=False, titles=False, verbose=False):
     html_parser = HTMLParser()
 
     re_album_hash = re.compile(r'(?:.*/)?([A-Za-z0-9]{5})(?:[/#].*)?$')
@@ -41,7 +35,9 @@ def save_albums(albums, include_title=False, verbose=False):
     re_title = re.compile(r'data-title="(.*?)"')
     re_title_sanitize = re.compile(r'(?:[^ -~]|[/:])+')
 
-    images = set()
+    # Use a process pool to save images in parallel
+    pool = Pool()
+    kwds = {'verbose': verbose}
 
     for album in albums:
         try:
@@ -53,8 +49,7 @@ def save_albums(albums, include_title=False, verbose=False):
             print('error: could not read album: ' + album, file=sys.stderr)
             continue
 
-        if include_title:
-            # Extract the title, sanitize it, and include it in the directory
+        if titles:
             title_raw = re_title.search(content).group(1)
             title_parsed = html_parser.unescape(title_raw)
             title_sanitized = re_title_sanitize.sub(' ', title_parsed)
@@ -66,14 +61,18 @@ def save_albums(albums, include_title=False, verbose=False):
 
             os.makedirs(directory)
 
-        # Add each image and its relevant information to the set
         for number, pair in enumerate(re_image.finditer(content)):
-            image = pair.group(1) + pair.group(2)
-            images.add((directory, number + 1, image, verbose))
+            filename = pair.group(1) + pair.group(2)
+            url = 'http://i.imgur.com/' + filename
 
-    # Use a process pool to simultaneously save images
-    pool = Pool()
-    pool.imap_unordered(save_image, images)
+            if numbers:
+                path = '{0}/{2}'.format(directory, filename)
+            else:
+                path = '{0}/{1}-{2}'.format(directory, number, filename)
+
+            pool.apply_async(save_image, args=(url, path), kwds=kwds)
+
+    # Wait for worker processes to complete
     pool.close()
     pool.join()
 
@@ -81,17 +80,19 @@ def save_albums(albums, include_title=False, verbose=False):
 def main():
     parser = ArgumentParser(description='Download Imgur albums')
 
-    # Require at least one album
     parser.add_argument('albums', nargs='+', type=str, metavar='album',
                         help='an album hash or URL')
-    parser.add_argument('-t', '--title', action='store_true',
-                        help='append album title to directory name')
+    parser.add_argument('-n', '--numbers', action='store_true',
+                        help='prepend numbers to filenames')
+    parser.add_argument('-t', '--titles', action='store_true',
+                        help='append album titles to directory names')
     parser.add_argument('-v', '--verbose', action='store_true',
                         help='verbose output')
 
     args = parser.parse_args()
 
-    save_albums(args.albums, include_title=args.title, verbose=args.verbose)
+    save_albums(args.albums, numbers=args.numbers, titles=args.titles,
+                verbose=args.verbose)
 
 
 if __name__ == '__main__':
