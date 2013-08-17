@@ -66,9 +66,9 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
             url = 'http://i.imgur.com/' + filename
 
             if numbers:
-                path = '{0}/{2}'.format(directory, filename)
-            else:
                 path = '{0}/{1}-{2}'.format(directory, number, filename)
+            else:
+                path = '{0}/{2}'.format(directory, filename)
 
             pool.apply_async(save_image, args=(url, path), kwds=kwds)
 
