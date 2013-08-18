@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/08/17
+# 2013/08/18
 
 import os
 import re
@@ -30,7 +30,7 @@ def save_image(url, path, verbose=False):
 def save_albums(albums, numbers=False, titles=False, verbose=False):
     html_parser = HTMLParser()
 
-    re_album_hash = re.compile(r'(?:.*/)?([A-Za-z0-9]{5})(?:[/#].*)?$')
+    re_album_hash = re.compile(r'(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
     re_image = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
     re_title = re.compile(r'data-title="(.*?)"')
     re_title_sanitize = re.compile(r'(?:[^ -~]|[/:])+')
