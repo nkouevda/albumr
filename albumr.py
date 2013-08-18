@@ -53,7 +53,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
             title_raw = re_title.search(content).group(1)
             title_parsed = html_parser.unescape(title_raw)
             title_sanitized = re_title_sanitize.sub(' ', title_parsed)
-            directory += '-[' + title_sanitized + ']'
+            directory += '-[%s]' % title_sanitized
 
         if not os.path.exists(directory):
             if verbose:
@@ -66,9 +66,9 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
             url = 'http://i.imgur.com/' + filename
 
             if numbers:
-                path = '{0}/{1}-{2}'.format(directory, number, filename)
+                path = '%s/%d-%s' % (directory, number, filename)
             else:
-                path = '{0}/{2}'.format(directory, filename)
+                path = '%s/%s' % (directory, filename)
 
             pool.apply_async(save_image, args=(url, path), kwds=kwds)
 
