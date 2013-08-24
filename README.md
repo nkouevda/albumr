@@ -1,5 +1,5 @@
 <!-- Nikita Kouevda -->
-<!-- 2013/07/22 -->
+<!-- 2013/08/24 -->
 
 # albumr
 
@@ -8,13 +8,13 @@ Command-line downloading of Imgur albums.
 ## Usage
 
 ```bash
-python3 albumr.py [-h] album [album ...]
+python3 albumr.py [-h] [-n] [-t] [-v] album [album ...]
 ```
 
 or (with execute permission):
 
 ```bash
-./albumr.py [-h] album [album ...]
+./albumr.py [-h] [-n] [-t] [-v] album [album ...]
 ```
 
 ## Examples
