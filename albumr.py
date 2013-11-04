@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/08/18
+# 2013/11/04
 
 import os
 import re
@@ -12,9 +12,13 @@ from multiprocessing import Pool
 from urllib.request import urlopen
 
 
+def print_error(message):
+    print('albumr: ' + message, file=sys.stderr)
+
+
 def save_image(url, path, verbose=False):
     if os.path.exists(path):
-        print('error: file exists: ' + path, file=sys.stderr)
+        print_error('file exists: ' + path)
     else:
         try:
             with urlopen(url) as in_url:
@@ -24,7 +28,7 @@ def save_image(url, path, verbose=False):
 
                     out_file.write(in_url.read())
         except:
-            print('error: could not save file: ' + path, file=sys.stderr)
+            print_error('could not save file: ' + path)
 
 
 def save_albums(albums, numbers=False, titles=False, verbose=False):
@@ -46,7 +50,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
             with urlopen('http://imgur.com/a/' + album_hash) as in_url:
                 content = in_url.read().decode()
         except:
-            print('error: could not read album: ' + album, file=sys.stderr)
+            print_error('could not read album: ' + album)
             continue
 
         if titles:
