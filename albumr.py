@@ -22,16 +22,19 @@ def print_error(message):
 def save_image(url, path, verbose=False):
     if os.path.exists(path):
         print_error('file exists: ' + path)
-    else:
-        try:
-            with urlopen(url) as in_url:
-                with open(path, 'wb') as out_file:
-                    if verbose:
-                        print('saving file: ' + path)
+        return
 
-                    out_file.write(in_url.read())
-        except:
-            print_error('could not save file: ' + path)
+    try:
+        with urlopen(url) as in_url:
+            content = in_url.read()
+
+        if verbose:
+            print('saving file: ' + path)
+
+        with open(path, 'wb') as out_file:
+            out_file.write(content)
+    except:
+        print_error('could not save file: ' + path)
 
 
 def save_albums(albums, numbers=False, titles=False, verbose=False):
@@ -42,7 +45,6 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
     re_title = re.compile(r'data-title="(.*?)"')
     re_title_sanitize = re.compile(r'(?:[^ -~]|[/:])+')
 
-    # Use a process pool to save images in parallel
     pool = Pool()
     kwds = {'verbose': verbose}
 
@@ -79,7 +81,6 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
             pool.apply_async(save_image, args=(url, path), kwds=kwds)
 
-    # Wait for worker processes to complete
     pool.close()
     pool.join()
 
