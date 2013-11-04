@@ -12,8 +12,11 @@ from multiprocessing import Pool
 from urllib.request import urlopen
 
 
+prog = 'albumr'
+
+
 def print_error(message):
-    print('albumr: ' + message, file=sys.stderr)
+    print(prog + ': ' + message, file=sys.stderr)
 
 
 def save_image(url, path, verbose=False):
@@ -82,7 +85,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
 
 def main():
-    parser = ArgumentParser(description='Download Imgur albums')
+    parser = ArgumentParser(prog=prog, description='Download Imgur albums')
 
     parser.add_argument('albums', nargs='+', type=str, metavar='album',
                         help='an album hash or URL')
