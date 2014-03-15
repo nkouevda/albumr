@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2013/11/04
+# 2014/03/15
 
 import os
 import re
@@ -12,11 +12,8 @@ from multiprocessing import Pool
 from urllib.request import urlopen
 
 
-prog = 'albumr'
-
-
 def print_error(message):
-    print(prog + ': ' + message, file=sys.stderr)
+    print(__file__ + ': ' + message, file=sys.stderr)
 
 
 def save_image(url, path, verbose=False):
@@ -86,7 +83,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
 
 def main():
-    parser = ArgumentParser(prog=prog, description='Download Imgur albums')
+    parser = ArgumentParser(prog=__file__, description='Download Imgur albums')
 
     parser.add_argument('albums', nargs='+', type=str, metavar='album',
                         help='an album hash or URL')
