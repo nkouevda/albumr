@@ -60,8 +60,8 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
         if titles:
             title_raw = re_title.search(content).group(1)
-            title_parsed = html_parser.unescape(title_raw)
-            title_sanitized = re_title_sanitize.sub(' ', title_parsed)
+            title_unescaped = html_parser.unescape(title_raw)
+            title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
             directory += '-[%s]' % title_sanitized
 
         if not os.path.exists(directory):
