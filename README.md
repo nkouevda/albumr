@@ -1,9 +1,9 @@
 <!-- Nikita Kouevda -->
-<!-- 2013/11/04 -->
+<!-- 2014/03/29 -->
 
 # albumr
 
-Command-line downloading of Imgur albums.
+Command-line Imgur album downloader.
 
 ## Usage
 

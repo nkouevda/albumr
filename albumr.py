@@ -86,7 +86,8 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
 
 def main():
-    parser = ArgumentParser(prog=PROGRAM, description='Download Imgur albums')
+    parser = ArgumentParser(prog=PROGRAM,
+                            description='Command-line Imgur album downloader')
 
     parser.add_argument('albums', nargs='+', type=str, metavar='album',
                         help='an album hash or URL')
