@@ -8,17 +8,17 @@ Command-line Imgur album downloader.
 ## Usage
 
 ```bash
-python3 albumr.py [-h] [-n] [-t] [-v] album [album ...]
+./albumr.py [-h] [-n] [-t] [-v] album [album ...]
 ```
 
 ## Examples
 
 ```bash
-python3 albumr.py -ntv adkET
+./albumr.py -ntv adkET
 ```
 
 ```bash
-python3 albumr.py http://imgur.com/a/adkET
+./albumr.py http://imgur.com/a/adkET
 ```
 
 ## License
