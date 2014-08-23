@@ -3,12 +3,12 @@
 # Nikita Kouevda
 # 2014/08/22
 
-import os
-import re
-import sys
 from argparse import ArgumentParser
 from html.parser import HTMLParser
 from multiprocessing import Pool
+import os
+import re
+import sys
 from urllib.request import urlopen
 
 
@@ -16,70 +16,72 @@ PROGRAM = os.path.basename(__file__)
 
 
 def print_error(message):
-  print(PROGRAM + ': ' + message, file=sys.stderr)
+  print('%s: %s' % (PROGRAM, message), file=sys.stderr)
 
 
 def save_image(url, path, verbose=False):
   if os.path.exists(path):
-    print_error('file exists: ' + path)
+    print_error('file exists: %s' % path)
     return
 
   try:
-    with urlopen(url) as in_url:
-      content = in_url.read()
+    with urlopen(url) as in_file:
+      content = in_file.read()
 
     if verbose:
-      print('saving file: ' + path)
+      print('saving file: %s' % path)
 
     with open(path, 'wb') as out_file:
       out_file.write(content)
   except:
-    print_error('could not save file: ' + path)
+    print_error('could not save file: %s' % path)
 
 
 def save_albums(albums, numbers=False, titles=False, verbose=False):
   html_parser = HTMLParser()
 
-  re_album_hash = re.compile(r'(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
+  re_album_hash = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
   re_image = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
   re_title = re.compile(r'data-title="(.*?)"')
   re_title_sanitize = re.compile(r'(?:[^ -~]|[/:])+')
 
   pool = Pool()
-  kwds = {'verbose': verbose}
+  kwargs = {'verbose': verbose}
 
   for album in albums:
     try:
-      directory = album_hash = re_album_hash.match(album).group(1)
+      album_hash = re_album_hash.search(album).group(1)
 
-      with urlopen('http://imgur.com/a/' + album_hash) as in_url:
-        content = in_url.read().decode()
+      with urlopen('http://imgur.com/a/%s' % album_hash) as in_file:
+        content = in_file.read().decode()
     except:
-      print_error('could not read album: ' + album)
+      print_error('could not read album: %s' % album)
       continue
 
     if titles:
       title_raw = re_title.search(content).group(1)
       title_unescaped = html_parser.unescape(title_raw)
       title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
-      directory += '-[%s]' % title_sanitized
+      directory = '%s-[%s]' % (album_hash, title_sanitized)
+    else:
+      directory = album_hash
 
     if not os.path.exists(directory):
       if verbose:
-        print('making directory: ' + directory)
+        print('making directory: %s' % directory)
 
       os.makedirs(directory)
 
-    for number, pair in enumerate(re_image.finditer(content)):
-      filename = pair.group(1) + pair.group(2)
-      url = 'http://i.imgur.com/' + filename
+    for i, image_match in enumerate(re_image.finditer(content)):
+      filename = '%s%s' % (image_match.group(1), image_match.group(2))
+      url = 'http://i.imgur.com/%s' % filename
 
       if numbers:
-        path = '%s/%d-%s' % (directory, number, filename)
+        path = '%s/%d-%s' % (directory, i, filename)
       else:
         path = '%s/%s' % (directory, filename)
 
-      pool.apply_async(save_image, args=(url, path), kwds=kwds)
+      pool.apply_async(save_image, args=(url, path), kwds=kwargs)
 
   pool.close()
   pool.join()
