@@ -55,22 +55,20 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
       title_raw = re_title.search(content).group(1)
       title_unescaped = html_parser.unescape(title_raw)
       title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
-      directory = '{}-[{}]'.format(album_hash, title_sanitized)
+      album_dir = '{}-[{}]'.format(album_hash, title_sanitized)
     else:
-      directory = album_hash
+      album_dir = album_hash
 
-    if not os.path.exists(directory):
+    if not os.path.exists(album_dir):
       if verbose:
-        print('making directory: {}'.format(directory))
-      os.makedirs(directory)
+        print('making directory: {}'.format(album_dir))
+      os.makedirs(album_dir)
 
     for i, image_match in enumerate(re_image.finditer(content)):
-      filename = '{}{}'.format(image_match.group(1), image_match.group(2))
-      url = 'http://i.imgur.com/{}'.format(filename)
-      if numbers:
-        path = '{}/{:d}-{}'.format(directory, i, filename)
-      else:
-        path = '{}/{}'.format(directory, filename)
+      orig_name = '{}{}'.format(image_match.group(1), image_match.group(2))
+      url = 'http://i.imgur.com/{}'.format(orig_name)
+      filename = '{:d}-{}'.format(i, orig_name) if numbers else orig_name
+      path = '{}/{}'.format(album_dir, filename)
       pool.apply_async(save_image, args=(url, path, verbose))
 
   pool.close()
