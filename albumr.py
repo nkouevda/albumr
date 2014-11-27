@@ -1,27 +1,24 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2014/08/22
+# 2014/11/27
 
 from argparse import ArgumentParser
 from html.parser import HTMLParser
-from multiprocessing import Pool
+import multiprocessing
 import os
 import re
 import sys
 from urllib.request import urlopen
 
 
-PROGRAM = os.path.basename(__file__)
-
-
 def print_error(message):
-  print('%s: %s' % (PROGRAM, message), file=sys.stderr)
+  print('{}: {}'.format(sys.argv[0], message), file=sys.stderr)
 
 
 def save_image(url, path, verbose=False):
   if os.path.exists(path):
-    print_error('file exists: %s' % path)
+    print_error('file exists: {}'.format(path))
     return
 
   try:
@@ -29,12 +26,12 @@ def save_image(url, path, verbose=False):
       content = in_file.read()
 
     if verbose:
-      print('saving file: %s' % path)
+      print('saving file: {}'.format(path))
 
     with open(path, 'wb') as out_file:
       out_file.write(content)
   except:
-    print_error('could not save file: %s' % path)
+    print_error('could not save file: {}'.format(path))
 
 
 def save_albums(albums, numbers=False, titles=False, verbose=False):
@@ -45,41 +42,41 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
   re_title = re.compile(r'data-title="(.*?)"')
   re_title_sanitize = re.compile(r'(?:[^ -~]|[/:])+')
 
-  pool = Pool()
+  pool = multiprocessing.Pool()
   kwargs = {'verbose': verbose}
 
   for album in albums:
     try:
       album_hash = re_album_hash.search(album).group(1)
 
-      with urlopen('http://imgur.com/a/%s' % album_hash) as in_file:
+      with urlopen('http://imgur.com/a/{}'.format(album_hash)) as in_file:
         content = in_file.read().decode()
     except:
-      print_error('could not read album: %s' % album)
+      print_error('could not read album: {}'.format(album))
       continue
 
     if titles:
       title_raw = re_title.search(content).group(1)
       title_unescaped = html_parser.unescape(title_raw)
       title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
-      directory = '%s-[%s]' % (album_hash, title_sanitized)
+      directory = '{}-[{}]'.format(album_hash, title_sanitized)
     else:
       directory = album_hash
 
     if not os.path.exists(directory):
       if verbose:
-        print('making directory: %s' % directory)
+        print('making directory: {}'.format(directory))
 
       os.makedirs(directory)
 
     for i, image_match in enumerate(re_image.finditer(content)):
-      filename = '%s%s' % (image_match.group(1), image_match.group(2))
-      url = 'http://i.imgur.com/%s' % filename
+      filename = '{}{}'.format(image_match.group(1), image_match.group(2))
+      url = 'http://i.imgur.com/{}'.format(filename)
 
       if numbers:
-        path = '%s/%d-%s' % (directory, i, filename)
+        path = '{}/{:d}-{}'.format(directory, i, filename)
       else:
-        path = '%s/%s' % (directory, filename)
+        path = '{}/{}'.format(directory, filename)
 
       pool.apply_async(save_image, args=(url, path), kwds=kwargs)
 
@@ -88,9 +85,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
 
 def main():
-  parser = ArgumentParser(prog=PROGRAM,
-                          description='Command-line Imgur album downloader')
-
+  parser = ArgumentParser(description='Command-line Imgur album downloader')
   parser.add_argument('albums', nargs='+', type=str, metavar='album',
                       help='an album hash or URL')
   parser.add_argument('-n', '--numbers', action='store_true',
@@ -101,7 +96,6 @@ def main():
                       help='verbose output')
 
   args = parser.parse_args()
-
   save_albums(args.albums, numbers=args.numbers, titles=args.titles,
               verbose=args.verbose)
 
