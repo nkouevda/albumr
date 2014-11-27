@@ -24,10 +24,8 @@ def save_image(url, path, verbose=False):
   try:
     with urlopen(url) as in_file:
       content = in_file.read()
-
     if verbose:
       print('saving file: {}'.format(path))
-
     with open(path, 'wb') as out_file:
       out_file.write(content)
   except:
@@ -43,12 +41,10 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
   re_title_sanitize = re.compile(r'(?:[^ -~]|[/:])+')
 
   pool = multiprocessing.Pool()
-  kwargs = {'verbose': verbose}
 
   for album in albums:
     try:
       album_hash = re_album_hash.search(album).group(1)
-
       with urlopen('http://imgur.com/a/{}'.format(album_hash)) as in_file:
         content = in_file.read().decode()
     except:
@@ -66,19 +62,16 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
     if not os.path.exists(directory):
       if verbose:
         print('making directory: {}'.format(directory))
-
       os.makedirs(directory)
 
     for i, image_match in enumerate(re_image.finditer(content)):
       filename = '{}{}'.format(image_match.group(1), image_match.group(2))
       url = 'http://i.imgur.com/{}'.format(filename)
-
       if numbers:
         path = '{}/{:d}-{}'.format(directory, i, filename)
       else:
         path = '{}/{}'.format(directory, filename)
-
-      pool.apply_async(save_image, args=(url, path), kwds=kwargs)
+      pool.apply_async(save_image, args=(url, path, verbose))
 
   pool.close()
   pool.join()
