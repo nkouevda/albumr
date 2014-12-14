@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2014/11/27
+# 2014/12/14
 
 from argparse import ArgumentParser
 from html.parser import HTMLParser
@@ -76,7 +76,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
 
 
 def main():
-  parser = ArgumentParser(description='Command-line Imgur album downloader')
+  parser = ArgumentParser(description='Imgur album downloader')
   parser.add_argument('albums', nargs='+', type=str, metavar='album',
                       help='an album hash or URL')
   parser.add_argument('-n', '--numbers', action='store_true',

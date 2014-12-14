@@ -3,13 +3,13 @@
 
 # albumr
 
-Command-line Imgur album downloader.
+Imgur album downloader.
 
 ## Usage
 
     usage: albumr.py [-h] [-n] [-t] [-v] album [album ...]
 
-    Command-line Imgur album downloader
+    Imgur album downloader
 
     positional arguments:
     album          an album hash or URL
