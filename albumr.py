@@ -1,38 +1,33 @@
 #!/usr/bin/env python3
 
 # Nikita Kouevda
-# 2014/12/14
+# 2015/05/23
 
 from argparse import ArgumentParser
 from html.parser import HTMLParser
+import logging
 import multiprocessing
 import os
 import re
-import sys
 from urllib.request import urlopen
 
 
-def print_error(message):
-  print('{}: {}'.format(sys.argv[0], message), file=sys.stderr)
-
-
-def save_image(url, path, verbose=False):
+def save_image(url, path):
   if os.path.exists(path):
-    print_error('file exists: {}'.format(path))
+    logging.error('file exists: %s', path)
     return
 
   try:
     with urlopen(url) as in_file:
       content = in_file.read()
-    if verbose:
-      print('saving file: {}'.format(path))
+    logging.info('saving file: %s', path)
     with open(path, 'wb') as out_file:
       out_file.write(content)
   except:
-    print_error('could not save file: {}'.format(path))
+    logging.exception('could not save file: %s', path)
 
 
-def save_albums(albums, numbers=False, titles=False, verbose=False):
+def save_albums(albums, numbers=False, titles=False):
   html_parser = HTMLParser()
 
   re_album_hash = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
@@ -48,7 +43,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
       with urlopen('http://imgur.com/a/{}'.format(album_hash)) as in_file:
         content = in_file.read().decode()
     except:
-      print_error('could not read album: {}'.format(album))
+      logging.exception('could not read album: %s', album)
       continue
 
     if titles:
@@ -60,8 +55,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
       album_dir = album_hash
 
     if not os.path.exists(album_dir):
-      if verbose:
-        print('making directory: {}'.format(album_dir))
+      logging.info('making directory: %s', album_dir)
       os.makedirs(album_dir)
 
     for i, image_match in enumerate(re_image.finditer(content)):
@@ -69,7 +63,7 @@ def save_albums(albums, numbers=False, titles=False, verbose=False):
       url = 'http://i.imgur.com/{}'.format(orig_name)
       filename = '{:d}-{}'.format(i, orig_name) if numbers else orig_name
       path = '{}/{}'.format(album_dir, filename)
-      pool.apply_async(save_image, args=(url, path, verbose))
+      pool.apply_async(save_image, args=(url, path))
 
   pool.close()
   pool.join()
@@ -85,10 +79,12 @@ def main():
                       help='append album titles to directory names')
   parser.add_argument('-v', '--verbose', action='store_true',
                       help='verbose output')
-
   args = parser.parse_args()
-  save_albums(args.albums, numbers=args.numbers, titles=args.titles,
-              verbose=args.verbose)
+
+  logging.basicConfig(format='%(levelname)s: %(message)s',
+                      level=logging.INFO if args.verbose else logging.WARNING)
+
+  save_albums(args.albums, numbers=args.numbers, titles=args.titles)
 
 
 if __name__ == '__main__':
