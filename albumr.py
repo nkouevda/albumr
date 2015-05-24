@@ -9,7 +9,8 @@ import logging
 import multiprocessing
 import os
 import re
-from urllib.request import urlopen
+
+import requests
 
 
 def save_image(url, path):
@@ -18,11 +19,11 @@ def save_image(url, path):
     return
 
   try:
-    with urlopen(url) as in_file:
-      content = in_file.read()
-    logging.info('saving file: %s', path)
+    response = requests.get(url)
+    response.raise_for_status()
     with open(path, 'wb') as out_file:
-      out_file.write(content)
+      out_file.write(response.content)
+    logging.info('saved file: %s', path)
   except:
     logging.exception('could not save file: %s', path)
 
@@ -40,14 +41,14 @@ def save_albums(albums, numbers=False, titles=False):
   for album in albums:
     try:
       album_hash = re_album_hash.search(album).group(1)
-      with urlopen('http://imgur.com/a/{}'.format(album_hash)) as in_file:
-        content = in_file.read().decode()
+      response = requests.get('http://imgur.com/a/{}'.format(album_hash))
+      response.raise_for_status()
     except:
       logging.exception('could not read album: %s', album)
       continue
 
     if titles:
-      title_raw = re_title.search(content).group(1)
+      title_raw = re_title.search(response.text).group(1)
       title_unescaped = html_parser.unescape(title_raw)
       title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
       album_dir = '{}-[{}]'.format(album_hash, title_sanitized)
@@ -58,7 +59,7 @@ def save_albums(albums, numbers=False, titles=False):
       logging.info('making directory: %s', album_dir)
       os.makedirs(album_dir)
 
-    for i, image_match in enumerate(re_image.finditer(content)):
+    for i, image_match in enumerate(re_image.finditer(response.text)):
       orig_name = '{}{}'.format(image_match.group(1), image_match.group(2))
       url = 'http://i.imgur.com/{}'.format(orig_name)
       filename = '{:d}-{}'.format(i, orig_name) if numbers else orig_name
@@ -83,6 +84,7 @@ def main():
 
   logging.basicConfig(format='%(levelname)s: %(message)s',
                       level=logging.INFO if args.verbose else logging.WARNING)
+  logging.getLogger('requests').setLevel(logging.WARNING)
 
   save_albums(args.albums, numbers=args.numbers, titles=args.titles)
 
