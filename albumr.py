@@ -39,7 +39,7 @@ def save_albums(albums, numbers=False, titles=False):
   for album in albums:
     try:
       album_hash = re_album_hash.search(album).group(1)
-      response = requests.get('http://imgur.com/a/%s' % album_hash)
+      response = requests.get('https://imgur.com/a/%s' % album_hash)
       response.raise_for_status()
     except:
       logging.exception('could not read album: %s', album)
@@ -59,7 +59,7 @@ def save_albums(albums, numbers=False, titles=False):
 
     for i, image_match in enumerate(re_image.finditer(response.text)):
       orig_name = '%s%s' % (image_match.group(1), image_match.group(2))
-      url = 'http://i.imgur.com/%s' % orig_name
+      url = 'https://i.imgur.com/%s' % orig_name
       filename = ('%d-%s' % (i, orig_name)) if numbers else orig_name
       path = '%s/%s' % (album_dir, filename)
       pool.apply_async(save_image, args=(url, path))
