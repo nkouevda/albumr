@@ -1,9 +1,13 @@
 <!-- Nikita Kouevda -->
-<!-- 2014/12/14 -->
+<!-- 2015/05/23 -->
 
 # albumr
 
 Imgur album downloader.
+
+## Setup
+
+    pip install -r requirements.txt
 
 ## Usage
 

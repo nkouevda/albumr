@@ -1,6 +1,4 @@
 # Nikita Kouevda
 # 2015/05/23
 
-# Python
-*.py[co]
-__pycache__
+requests==2.7.0
