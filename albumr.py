@@ -78,12 +78,9 @@ def main():
                       help='prepend numbers to filenames')
   parser.add_argument('-t', '--titles', action='store_true',
                       help='append album titles to directory names')
-  parser.add_argument('-v', '--verbose', action='store_true',
-                      help='verbose output')
   args = parser.parse_args()
 
-  logging.basicConfig(format='%(levelname)s: %(message)s',
-                      level=logging.INFO if args.verbose else logging.WARNING)
+  logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
   logging.getLogger('requests').setLevel(logging.WARNING)
 
   save_albums(args.albums, numbers=args.numbers, titles=args.titles)

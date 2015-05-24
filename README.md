@@ -11,18 +11,17 @@ Imgur album downloader.
 
 ## Usage
 
-    usage: albumr.py [-h] [-n] [-t] [-v] album [album ...]
+    usage: albumr.py [-h] [-n] [-t] album [album ...]
 
     Imgur album downloader
 
     positional arguments:
-    album          an album hash or URL
+      album          an album hash or URL
 
     optional arguments:
-    -h, --help     show this help message and exit
-    -n, --numbers  prepend numbers to filenames
-    -t, --titles   append album titles to directory names
-    -v, --verbose  verbose output
+      -h, --help     show this help message and exit
+      -n, --numbers  prepend numbers to filenames
+      -t, --titles   append album titles to directory names
 
 ## Examples
 
@@ -30,10 +29,9 @@ From album URL:
 
     ./albumr.py http://imgur.com/a/adkET
 
-From album hash, with numbers in filenames, album title in directory name, and
-verbose output:
+From album hash, with numbers in filenames and album title in directory name:
 
-    ./albumr.py -ntv adkET
+    ./albumr.py -nt adkET
 
 ## License
 
