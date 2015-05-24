@@ -39,7 +39,7 @@ def save_albums(albums, numbers=False, titles=False):
   for album in albums:
     try:
       album_hash = re_album_hash.search(album).group(1)
-      response = requests.get('http://imgur.com/a/{}'.format(album_hash))
+      response = requests.get('http://imgur.com/a/%s' % album_hash)
       response.raise_for_status()
     except:
       logging.exception('could not read album: %s', album)
@@ -49,7 +49,7 @@ def save_albums(albums, numbers=False, titles=False):
       title_raw = re_title.search(response.text).group(1)
       title_unescaped = html.unescape(title_raw)
       title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
-      album_dir = '{}-[{}]'.format(album_hash, title_sanitized)
+      album_dir = '%s-[%s]' % (album_hash, title_sanitized)
     else:
       album_dir = album_hash
 
@@ -58,10 +58,10 @@ def save_albums(albums, numbers=False, titles=False):
       os.makedirs(album_dir)
 
     for i, image_match in enumerate(re_image.finditer(response.text)):
-      orig_name = '{}{}'.format(image_match.group(1), image_match.group(2))
-      url = 'http://i.imgur.com/{}'.format(orig_name)
-      filename = '{:d}-{}'.format(i, orig_name) if numbers else orig_name
-      path = '{}/{}'.format(album_dir, filename)
+      orig_name = '%s%s' % (image_match.group(1), image_match.group(2))
+      url = 'http://i.imgur.com/%s' % orig_name
+      filename = ('%d-%s' % (i, orig_name)) if numbers else orig_name
+      path = '%s/%s' % (album_dir, filename)
       pool.apply_async(save_image, args=(url, path))
 
   pool.close()
