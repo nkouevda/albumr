@@ -3,8 +3,8 @@
 # Nikita Kouevda
 # 2015/05/23
 
-from argparse import ArgumentParser
-from html.parser import HTMLParser
+import argparse
+import html
 import logging
 import multiprocessing
 import os
@@ -29,8 +29,6 @@ def save_image(url, path):
 
 
 def save_albums(albums, numbers=False, titles=False):
-  html_parser = HTMLParser()
-
   re_album_hash = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
   re_image = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
   re_title = re.compile(r'data-title="(.*?)"')
@@ -49,7 +47,7 @@ def save_albums(albums, numbers=False, titles=False):
 
     if titles:
       title_raw = re_title.search(response.text).group(1)
-      title_unescaped = html_parser.unescape(title_raw)
+      title_unescaped = html.unescape(title_raw)
       title_sanitized = re_title_sanitize.sub(' ', title_unescaped)
       album_dir = '{}-[{}]'.format(album_hash, title_sanitized)
     else:
@@ -71,7 +69,7 @@ def save_albums(albums, numbers=False, titles=False):
 
 
 def main():
-  parser = ArgumentParser(description='Imgur album downloader')
+  parser = argparse.ArgumentParser(description='Imgur album downloader')
   parser.add_argument('albums', nargs='+', type=str, metavar='album',
                       help='an album hash or URL')
   parser.add_argument('-n', '--numbers', action='store_true',
