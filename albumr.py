@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# Nikita Kouevda
-# 2015/05/23
-
 import argparse
 import html
 import logging
@@ -11,7 +8,6 @@ import os
 import re
 
 import requests
-
 
 def save_image(url, path):
   if os.path.exists(path):
@@ -26,7 +22,6 @@ def save_image(url, path):
     logging.info('saved file: %s', path)
   except:
     logging.exception('could not save file: %s', path)
-
 
 def save_albums(albums, numbers=False, titles=False):
   re_album_hash = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
@@ -67,7 +62,6 @@ def save_albums(albums, numbers=False, titles=False):
   pool.close()
   pool.join()
 
-
 def main():
   parser = argparse.ArgumentParser(description='Imgur album downloader')
   parser.add_argument('albums', nargs='+', type=str, metavar='album',
@@ -82,7 +76,6 @@ def main():
   logging.getLogger('requests').setLevel(logging.WARNING)
 
   save_albums(args.albums, numbers=args.numbers, titles=args.titles)
-
 
 if __name__ == '__main__':
   main()

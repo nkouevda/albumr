@@ -1,6 +1,3 @@
-<!-- Nikita Kouevda -->
-<!-- 2015/05/23 -->
-
 # albumr
 
 Imgur album downloader.
