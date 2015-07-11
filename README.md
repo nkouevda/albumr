@@ -2,13 +2,13 @@
 
 Imgur album downloader.
 
-## Setup
+## Installation
 
-    pip install -r requirements.txt
+    pip install albumr
 
 ## Usage
 
-    usage: albumr.py [-h] [-n] [-t] album [album ...]
+    usage: albumr [-h] [-n] [-t] album [album ...]
 
     Imgur album downloader
 
@@ -24,11 +24,11 @@ Imgur album downloader.
 
 From album URL:
 
-    ./albumr.py http://imgur.com/a/adkET
+    albumr http://imgur.com/a/adkET
 
 From album hash, with numbers in filenames and album title in directory name:
 
-    ./albumr.py -nt adkET
+    albumr -nt adkET
 
 ## License
 
