@@ -24,7 +24,7 @@ def save_image(url, path):
 def save_albums(albums, numbers=False, titles=False):
   album_hash_re = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
   image_re = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
-  title_re = re.compile(r'data-title="(.*?)"')
+  title_re = re.compile(r'"title":"(.*?)","title_clean":')
   title_sanitize_re = re.compile(r'(?:[^ -~]|[/:])+')
   unescape = html_parser.HTMLParser().unescape
 
