@@ -7,6 +7,11 @@ import re
 import requests
 from six.moves import html_parser
 
+_ALBUM_HASH_RE = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
+_IMAGE_RE = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
+_TITLE_RE = re.compile(r'"title":"(.*?)","title_clean":')
+_TITLE_SANITIZE_RE = re.compile(r'(?:[^ -~]|[/:])+')
+
 def save_image(url, path):
   if os.path.exists(path):
     logging.error('file exists: %s', path)
@@ -22,36 +27,32 @@ def save_image(url, path):
     logging.exception('could not save file: %s', path)
 
 def save_albums(albums, numbers=False, titles=False):
-  album_hash_re = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
-  image_re = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
-  title_re = re.compile(r'"title":"(.*?)","title_clean":')
-  title_sanitize_re = re.compile(r'(?:[^ -~]|[/:])+')
   unescape = html_parser.HTMLParser().unescape
-
   pool = multiprocessing.Pool()
 
   for album in albums:
     try:
-      album_hash = album_hash_re.search(album).group(1)
+      album_hash = _ALBUM_HASH_RE.search(album).group(1)
       response = requests.get('https://imgur.com/a/%s' % album_hash)
       response.raise_for_status()
     except:
       logging.exception('could not read album: %s', album)
       continue
 
+    album_dir = album_hash
     if titles:
-      title_raw = title_re.search(response.text).group(1)
-      title_unescaped = unescape(title_raw)
-      title_sanitized = title_sanitize_re.sub(' ', title_unescaped)
-      album_dir = '%s-[%s]' % (album_hash, title_sanitized)
-    else:
-      album_dir = album_hash
+      title_match = _TITLE_RE.search(response.text)
+      if title_match:
+        title = _TITLE_SANITIZE_RE.sub(' ', unescape(title_match.group(1)))
+        album_dir = '%s-[%s]' % (album_hash, title)
+      else:
+        logging.warning('failed to extract album title')
 
     if not os.path.exists(album_dir):
       logging.info('making directory: %s', album_dir)
       os.makedirs(album_dir)
 
-    for i, image_match in enumerate(image_re.finditer(response.text)):
+    for i, image_match in enumerate(_IMAGE_RE.finditer(response.text)):
       orig_name = '%s%s' % (image_match.group(1), image_match.group(2))
       url = 'https://i.imgur.com/%s' % orig_name
       filename = ('%d-%s' % (i, orig_name)) if numbers else orig_name
