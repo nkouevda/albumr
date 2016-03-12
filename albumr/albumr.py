@@ -23,7 +23,7 @@ def save_image(url, path):
     with open(path, 'wb') as out_file:
       out_file.write(response.content)
     logging.info('saved file: %s', path)
-  except:
+  except (Exception, KeyboardInterrupt):
     logging.exception('could not save file: %s', path)
 
 def save_albums(albums, numbers=False, titles=False):
@@ -35,7 +35,7 @@ def save_albums(albums, numbers=False, titles=False):
       album_hash = _ALBUM_HASH_RE.search(album).group(1)
       response = requests.get('https://imgur.com/a/%s' % album_hash)
       response.raise_for_status()
-    except:
+    except Exception:
       logging.exception('could not read album: %s', album)
       continue
 

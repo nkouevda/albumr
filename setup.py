@@ -5,7 +5,7 @@ with open('README.md', 'r') as f:
 
 setup(
     name='albumr',
-    version='1.0.1',
+    version='1.0.2',
     description='Imgur album downloader',
     long_description=readme,
     url='https://github.com/nkouevda/albumr',
