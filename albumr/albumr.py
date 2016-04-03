@@ -1,4 +1,5 @@
 import argparse
+import json
 import logging
 import multiprocessing
 import os
@@ -8,7 +9,7 @@ import requests
 from six.moves import html_parser
 
 _ALBUM_HASH_RE = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
-_IMAGE_RE = re.compile(r'"hash":"([A-Za-z0-9]{5,7})".+?"ext":"(.+?)"')
+_IMAGES_RE = re.compile(r'"images":(\[.*)')
 _TITLE_RE = re.compile(r'"title":"(.*?)","title_clean":')
 _TITLE_SANITIZE_RE = re.compile(r'(?:[^ -~]|[/:])+')
 
@@ -27,6 +28,7 @@ def save_image(url, path):
     logging.exception('could not save file: %s', path)
 
 def save_albums(albums, numbers=False, titles=False):
+  raw_decode = json.JSONDecoder().raw_decode
   unescape = html_parser.HTMLParser().unescape
   pool = multiprocessing.Pool()
 
@@ -35,6 +37,7 @@ def save_albums(albums, numbers=False, titles=False):
       album_hash = _ALBUM_HASH_RE.search(album).group(1)
       response = requests.get('https://imgur.com/a/%s' % album_hash)
       response.raise_for_status()
+      images, _ = raw_decode(_IMAGES_RE.search(response.text).group(1))
     except Exception:
       logging.exception('could not read album: %s', album)
       continue
@@ -52,8 +55,8 @@ def save_albums(albums, numbers=False, titles=False):
       logging.info('making directory: %s', album_dir)
       os.makedirs(album_dir)
 
-    for i, image_match in enumerate(_IMAGE_RE.finditer(response.text)):
-      orig_name = '%s%s' % (image_match.group(1), image_match.group(2))
+    for image in images:
+      orig_name = '%s%s' % (image['hash'], image['ext'])
       url = 'https://i.imgur.com/%s' % orig_name
       filename = ('%d-%s' % (i, orig_name)) if numbers else orig_name
       path = '%s/%s' % (album_dir, filename)
