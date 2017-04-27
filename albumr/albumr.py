@@ -35,7 +35,7 @@ def save_albums(albums, numbers=False, titles=False):
   for album in albums:
     try:
       album_hash = _ALBUM_HASH_RE.search(album).group(1)
-      response = requests.get('https://imgur.com/a/%s' % album_hash)
+      response = requests.get('https://imgur.com/a/%s/all' % album_hash)
       response.raise_for_status()
       images, _ = raw_decode(_IMAGES_RE.search(response.text).group(1))
     except Exception:
@@ -55,7 +55,7 @@ def save_albums(albums, numbers=False, titles=False):
       logging.info('making directory: %s', album_dir)
       os.makedirs(album_dir)
 
-    for image in images:
+    for i, image in enumerate(images, start=1):
       orig_name = '%s%s' % (image['hash'], image['ext'])
       url = 'https://i.imgur.com/%s' % orig_name
       filename = ('%d-%s' % (i, orig_name)) if numbers else orig_name
