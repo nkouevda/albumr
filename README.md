@@ -8,17 +8,21 @@ Imgur album downloader.
 
 ## Usage
 
-    usage: albumr [-h] [-n] [-t] album [album ...]
+```
+usage: albumr [<options>] [--] <album>...
 
-    Imgur album downloader
+Imgur album downloader
 
-    positional arguments:
-      album          an album hash or URL
+positional arguments:
+  album                 an album hash or URL
 
-    optional arguments:
-      -h, --help     show this help message and exit
-      -n, --numbers  prepend numbers to filenames
-      -t, --titles   append album titles to directory names
+optional arguments:
+  -h, --help            show this help message and exit
+  -n, --numbers, --no-numbers
+                        prepend numbers to filenames; default: False
+  -t, --titles, --no-titles
+                        append album titles to directory names; default: False
+```
 
 ## Examples
 

@@ -14,6 +14,7 @@ setup(
     license='MIT',
     packages=['albumr'],
     install_requires=[
+        'argparse-extensions',
         'requests',
         'six',
     ],

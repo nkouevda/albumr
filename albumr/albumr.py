@@ -5,6 +5,7 @@ import multiprocessing
 import os
 import re
 
+import argparse_extensions
 import requests
 from six.moves import html_parser
 
@@ -12,6 +13,7 @@ _ALBUM_HASH_RE = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
 _IMAGES_RE = re.compile(r'"images":(\[.*)')
 _TITLE_RE = re.compile(r'"title":"(.*?)","title_clean":')
 _TITLE_SANITIZE_RE = re.compile(r'(?:[^ -~]|[/:])+')
+
 
 def save_image(url, path):
   if os.path.exists(path):
@@ -26,6 +28,7 @@ def save_image(url, path):
     logging.info('saved file: %s', path)
   except (Exception, KeyboardInterrupt):
     logging.exception('could not save file: %s', path)
+
 
 def save_albums(albums, numbers=False, titles=False):
   raw_decode = json.JSONDecoder().raw_decode
@@ -65,20 +68,37 @@ def save_albums(albums, numbers=False, titles=False):
   pool.close()
   pool.join()
 
+
 def main():
-  parser = argparse.ArgumentParser(description='Imgur album downloader')
-  parser.add_argument('albums', nargs='+', type=str, metavar='album',
-                      help='an album hash or URL')
-  parser.add_argument('-n', '--numbers', action='store_true',
-                      help='prepend numbers to filenames')
-  parser.add_argument('-t', '--titles', action='store_true',
-                      help='append album titles to directory names')
+  parser = argparse.ArgumentParser(
+      usage='%(prog)s [<options>] [--] <album>...',
+      description='Imgur album downloader')
+
+  parser.add_argument(
+      'albums',
+      nargs='+',
+      type=str,
+      help='an album hash or URL',
+      metavar='album')
+
+  parser.add_argument(
+      '-n',
+      '--numbers',
+      action=argparse_extensions.NegatableStoreTrueAction,
+      help='prepend numbers to filenames; default: %(default)s')
+  parser.add_argument(
+      '-t',
+      '--titles',
+      action=argparse_extensions.NegatableStoreTrueAction,
+      help='append album titles to directory names; default: %(default)s')
+
   args = parser.parse_args()
 
   logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
   logging.getLogger('requests').setLevel(logging.WARNING)
 
   save_albums(args.albums, numbers=args.numbers, titles=args.titles)
+
 
 if __name__ == '__main__':
   main()
