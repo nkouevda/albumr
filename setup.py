@@ -1,11 +1,16 @@
 from setuptools import setup
 
+version = {}
+
+with open('albumr/__version__.py', 'r') as f:
+  exec(f.read(), version)
+
 with open('README.md', 'r') as f:
   readme = f.read()
 
 setup(
     name='albumr',
-    version='1.0.4',
+    version=version['__version__'],
     description='Imgur album downloader',
     long_description=readme,
     url='https://github.com/nkouevda/albumr',
