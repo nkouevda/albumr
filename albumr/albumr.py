@@ -7,7 +7,9 @@ import re
 
 import argparse_extensions
 import requests
-from six.moves import html_parser
+import six
+
+from . import __version__
 
 _ALBUM_HASH_RE = re.compile(r'^(?:.*/)?([A-Za-z0-9]{5})(?:[/?#].*)?$')
 _IMAGES_RE = re.compile(r'"images":(\[.*)')
@@ -32,7 +34,7 @@ def save_image(url, path):
 
 def save_albums(albums, numbers=False, titles=False):
   raw_decode = json.JSONDecoder().raw_decode
-  unescape = html_parser.HTMLParser().unescape
+  unescape = six.moves.html_parser.HTMLParser().unescape
   pool = multiprocessing.Pool()
 
   for album in albums:
@@ -81,6 +83,11 @@ def main():
       help='an album hash or URL',
       metavar='album')
 
+  parser.add_argument(
+      '-v',
+      '--version',
+      action='version',
+      version='%(prog)s ' + __version__)
   parser.add_argument(
       '-n',
       '--numbers',

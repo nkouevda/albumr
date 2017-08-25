@@ -18,6 +18,7 @@ positional arguments:
 
 optional arguments:
   -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
   -n, --numbers, --no-numbers
                         prepend numbers to filenames; default: False
   -t, --titles, --no-titles
