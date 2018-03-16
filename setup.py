@@ -13,6 +13,7 @@ setup(
     version=version['__version__'],
     description='Imgur album downloader',
     long_description=readme,
+    long_description_content_type='text/markdown',
     url='https://github.com/nkouevda/albumr',
     author='Nikita Kouevda',
     author_email='nkouevda@gmail.com',
