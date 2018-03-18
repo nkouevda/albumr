@@ -37,4 +37,4 @@ From album hash, with numbers in filenames and album title in directory name:
 
 ## License
 
-Licensed under the [MIT License](http://www.opensource.org/licenses/MIT).
+[MIT License](LICENSE.txt)
