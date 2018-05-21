@@ -81,13 +81,8 @@ def main():
       nargs='+',
       type=str,
       help='an album hash or URL',
-      metavar='album')
+      metavar='<album>')
 
-  parser.add_argument(
-      '-v',
-      '--version',
-      action='version',
-      version='%(prog)s ' + __version__)
   parser.add_argument(
       '-n',
       '--numbers',
@@ -98,6 +93,11 @@ def main():
       '--titles',
       action=argparse_extensions.NegatableStoreTrueAction,
       help='append album titles to directory names; default: %(default)s')
+  parser.add_argument(
+      '-v',
+      '--version',
+      action='version',
+      version='%(prog)s ' + __version__)
 
   args = parser.parse_args()
 
