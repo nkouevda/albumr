@@ -6,6 +6,10 @@ Imgur album downloader.
 
     pip install albumr
 
+Or:
+
+    brew install nkouevda/nkouevda/albumr
+
 ## Usage
 
 ```
